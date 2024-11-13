@@ -10,6 +10,7 @@ const images = {
     home:require(`${baseurl}home.png`),
     user:require(`${baseurl}user.png`),
     next:require(`${baseurl}next.png`),
+    calendar:require(`${baseurl}schedule.png`),
 
     
 };
