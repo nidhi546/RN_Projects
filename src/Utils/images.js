@@ -11,6 +11,9 @@ const images = {
     user:require(`${baseurl}user.png`),
     next:require(`${baseurl}next.png`),
     calendar:require(`${baseurl}schedule.png`),
+    profile:require(`${baseurl}profile.png`),
+    E_mail:require(`${baseurl}email.png`),
+    phone:require(`${baseurl}phone-call.png`),
 
     
 };

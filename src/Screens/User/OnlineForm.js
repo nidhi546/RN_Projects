@@ -4,29 +4,24 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Button,
   ScrollView,
   Alert,
   Image,
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {RadioButton} from 'react-native-paper';
 import fonts from '../../Utils/fonts';
 import images from '../../Utils/images';
 import {Dropdown} from 'react-native-element-dropdown';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const BankingForm = () => {
-  // Form State Variables
+const BankingForm = ({navigation}) => {
   const [fullName, setFullName] = useState('');
-  // const [dob, setDob] = useState(new Date());
-  const [dob, setDob] = useState(''); // String for TextInput
-  const [dobDate, setDobDate] = useState(new Date()); // Date object for DateTimePicker
+  const [dob, setDob] = useState('');
+  const [dobDate, setDobDate] = useState(new Date());
   const [showDobPicker, setShowDobPicker] = useState(false);
-
-  // const [showDobPicker, setShowDobPicker] = useState(false);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [accountType, setAccountType] = useState('Savings');
@@ -61,12 +56,114 @@ const BankingForm = () => {
     {id: '2', value: 'Cheking'},
     {id: '3', value: 'Current'},
   ];
-  // Submit Form Handler
-  const handleSubmit = () => {
-    Alert.alert(
-      'Form Submitted',
-      'Your application has been submitted successfully!',
-    );
+  const handleSubmit = async () => {
+    if (!fullName) {
+      Alert.alert('Please Enter Full Name!');
+    } else if (!email) {
+      Alert.alert('Please Enter Email!');
+    } else if (!phone) {
+      Alert.alert('Please Enter Phone Number!');
+    } else if (!dob) {
+      Alert.alert('Please Select Date of Birth!');
+    } else if (!accountType) {
+      Alert.alert('Please Select Account Type!');
+    } else if (!accountNumber) {
+      Alert.alert('Please Add Account Number!');
+    } else if (!ifscCode) {
+      Alert.alert('Please Enter IFSC Code!');
+    } else if (!branchName) {
+      Alert.alert('Please Enter Your Branch Name!');
+    } else if (!initialDeposit) {
+      Alert.alert('Please Enter Amount!');
+    } else if (!idNumber) {
+      Alert.alert('Please Enter Your PAN Card Number!');
+    } else if (!occupation) {
+      Alert.alert('Please Enter Your Occupation!');
+    } else if (!income) {
+      Alert.alert('Please Enter Your Annual Income!');
+    } else if (!maritalStatus) {
+      Alert.alert('Please Select Your Marital Status!');
+    } else {
+      // All validations passed, create a JSON object with form data
+      const userRecords = [];
+      const formData = {
+        fullName: fullName,
+        email: email,
+        phone: phone,
+        dob: dob,
+        accountType: accountType,
+        accountNumber: accountNumber,
+        ifscCode: ifscCode,
+        branchName: branchName,
+        initialDeposit: initialDeposit,
+        idNumber: idNumber,
+        occupation: occupation,
+        income: income,
+        maritalStatus: maritalStatus,
+      };
+      userRecords.push(formData);
+      console.log(userRecords);
+
+      try {
+        // Retrieve existing records from AsyncStorage
+        const existingData = await AsyncStorage.getItem('@form_data');
+        let userRecords = existingData ? JSON.parse(existingData) : [];
+
+        // Define the new form data
+        const formData = {
+          fullName: fullName,
+          email: email,
+          phone: phone,
+          dob: dob,
+          accountType: accountType,
+          accountNumber: accountNumber,
+          ifscCode: ifscCode,
+          branchName: branchName,
+          initialDeposit: initialDeposit,
+          idNumber: idNumber,
+          occupation: occupation,
+          income: income,
+          maritalStatus: maritalStatus,
+        };
+
+        // Add the new form data to the array
+        userRecords.push(formData);
+
+        // Convert the updated array to a JSON string
+        const jsonValue = JSON.stringify(userRecords);
+
+        // Store the updated array in AsyncStorage
+        await AsyncStorage.setItem('@form_data', jsonValue);
+        console.log('Form Data stored in AsyncStorage:', jsonValue);
+
+        // Show success alert
+        Alert.alert(
+          'Form Submitted',
+          'Your application has been submitted successfully!',
+        );
+        setTimeout(() => {
+          navigation.navigate('UserStack', {screen: 'UserDashboard'});
+        }, 5000);
+
+        // Optionally, reset the form fields
+        // setFullName('');
+        // setEmail('');
+        // setPhone('');
+        // setDob('');
+        // setAccountType('');
+        // setAccountNumber('');
+        // setIfscCode('');
+        // setBranchName('');
+        // setInitialDeposit('');
+        // setIdNumber('');
+        // setOccupation('');
+        // setIncome('');
+        // setMaritalStatus('');
+      } catch (error) {
+        console.error('Error storing form data:', error);
+        Alert.alert('Error', 'An error occurred while saving the data.');
+      }
+    }
   };
 
   return (

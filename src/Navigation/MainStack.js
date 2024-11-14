@@ -4,6 +4,7 @@ import SplashScreen from '../Screens/SplashScreen';
 import LoginScreen from '../Screens/LoginScreen';
 import RegisterScreen from '../Screens/RegisterScreen';
 import OnlineForm from '../Screens/User/OnlineForm';
+import DetailScreen from '../Screens/Admin/DetailScreen';
 
 const Stack = createStackNavigator();
 
@@ -18,8 +19,8 @@ const MainStack = () => {
         }}
       />
       <Stack.Screen
-        name="RegisterScreen"
-        component={RegisterScreen}
+        name="DetailScreen"
+        component={DetailScreen}
         options={{
           headerShown: false,
         }}
