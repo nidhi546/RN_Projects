@@ -20,5 +20,14 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>NSFaceIDUsageDescription</key>
+<string>We use Face ID for authentication</string>
+<key>NSCameraUsageDescription</key>
+<string>We need camera access to detect faces</string>
+
+<!-- <key>NSCameraUsageDescription</key> -->
+<!-- <string>We need access to your camera for face recognition</string> -->
+
+
 </dict>
 </plist>

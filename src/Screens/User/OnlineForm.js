@@ -38,7 +38,7 @@ const BankingForm = ({navigation}) => {
 
   const formatDate = date => {
     const day = date.getDate();
-    const month = date.getMonth() + 1; // Months start from 0 in JS
+    const month = date.getMonth() + 1; 
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
   };

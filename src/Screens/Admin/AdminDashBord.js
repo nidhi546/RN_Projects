@@ -105,9 +105,12 @@ const AdminDashBord = ({navigation}) => {
                     'Choose Action',
                     'Do you want to dial or open WhatsApp?',
                     [
-                      {text: 'Dial', onPress: openDialer(item?.phone)},
-                      {text: 'WhatsApp', onPress: openWhatsApp(item?.phone)},
-                      {text: 'Cancel', style: 'cancel'},
+                      {text: 'Dial', onPress: () => openDialer(item?.phone)}, // Use a function reference
+                      {
+                        text: 'WhatsApp',
+                        onPress: () => openWhatsApp(item?.phone),
+                      }, // Use a function reference
+                      {text: 'Cancel', style: 'cancel'}, // 'cancel' does not need an onPress
                     ],
                   );
                 }}

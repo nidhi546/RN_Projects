@@ -14,6 +14,7 @@ const images = {
     profile:require(`${baseurl}profile.png`),
     E_mail:require(`${baseurl}email.png`),
     phone:require(`${baseurl}phone-call.png`),
+    fingerprint:require(`${baseurl}fingerprint.png`),
 
     
 };
