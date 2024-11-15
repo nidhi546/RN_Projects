@@ -9,12 +9,29 @@ import {
   Platform,
   TouchableOpacity,
   Image,
+  BackHandler,
 } from 'react-native';
 import {ImageSlider} from 'react-native-image-slider-banner';
 import fonts from '../../Utils/fonts';
 import images from '../../Utils/images';
+import { useFocusEffect } from '@react-navigation/native';
 
 const UserDashbord = ({navigation}) => {
+
+   useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate('AuthStack',{screen:"LoginScreen"});
+        return true; // Prevent default back button behavior
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [navigation])
+  );
   return (
     <SafeAreaView>
       <View style={{paddingHorizontal: 12}}>

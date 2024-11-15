@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
   SafeAreaView,
+  BackHandler,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {RadioButton} from 'react-native-paper';
@@ -16,6 +17,7 @@ import fonts from '../../Utils/fonts';
 import images from '../../Utils/images';
 import {Dropdown} from 'react-native-element-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 const BankingForm = ({navigation}) => {
   const [fullName, setFullName] = useState('');
@@ -50,7 +52,20 @@ const BankingForm = ({navigation}) => {
       setDob(formattedDate);
     }
   };
+ useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate('UserStack',{screen:"UserDashbord"});
+        return true; // Prevent default back button behavior
+      };
 
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [navigation])
+  );
   const data = [
     {id: '1', value: 'Saving'},
     {id: '2', value: 'Cheking'},

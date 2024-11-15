@@ -1,5 +1,12 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Image,
+} from 'react-native';
 import ReactNativeBiometrics from 'react-native-biometrics';
 import images from '../../Utils/images';
 
@@ -14,27 +21,38 @@ const FingerprintEnrollment = () => {
     rnBiometrics
       .isSensorAvailable()
       .then(resultObject => {
-        const { available, biometryType } = resultObject;
+        const {available, biometryType} = resultObject;
 
         if (available) {
           setBiometricAvailable(true);
-          Alert.alert('Success', `${biometryType} is available on this device.`);
+          Alert.alert(
+            'Success',
+            `${biometryType} is available on this device.`,
+          );
         } else {
           setBiometricAvailable(false);
-          Alert.alert('Error', 'Biometric hardware is not available on this device.');
+          Alert.alert(
+            'Error',
+            'Biometric hardware is not available on this device.',
+          );
         }
       })
       .catch(() => Alert.alert('Error', 'Unable to check biometric hardware.'));
   };
 
   // Register fingerprints
-  const registerFingerprint = (fingerprintNumber) => {
+  const registerFingerprint = fingerprintNumber => {
     rnBiometrics
-      .simplePrompt({ promptMessage: `Register Fingerprint ${fingerprintNumber}` })
+      .simplePrompt({
+        promptMessage: `Register Fingerprint ${fingerprintNumber}`,
+      })
       .then(result => {
         if (result.success) {
           setProgress(fingerprintNumber);
-          Alert.alert('Fingerprint Registered', `Fingerprint ${fingerprintNumber} registered successfully!`);
+          Alert.alert(
+            'Fingerprint Registered',
+            `Fingerprint ${fingerprintNumber} registered successfully!`,
+          );
         } else {
           Alert.alert('Failed', 'Fingerprint registration was cancelled.');
         }
@@ -45,9 +63,15 @@ const FingerprintEnrollment = () => {
   // Confirmation after completing the enrollment
   const confirmEnrollment = () => {
     if (progress === 2) {
-      Alert.alert('Success', 'Both fingerprints have been registered successfully!');
+      Alert.alert(
+        'Success',
+        'Both fingerprints have been registered successfully!',
+      );
     } else {
-      Alert.alert('Incomplete', 'Please complete the fingerprint registration.');
+      Alert.alert(
+        'Incomplete',
+        'Please complete the fingerprint registration.',
+      );
     }
   };
 
@@ -55,7 +79,9 @@ const FingerprintEnrollment = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Fingerprint Enrollment</Text>
 
-      <TouchableOpacity style={styles.checkButton} onPress={checkBiometricAvailability}>
+      <TouchableOpacity
+        style={styles.checkButton}
+        onPress={checkBiometricAvailability}>
         <Text style={styles.checkButtonText}>Check Biometric Availability</Text>
       </TouchableOpacity>
 
@@ -65,11 +91,11 @@ const FingerprintEnrollment = () => {
           <TouchableOpacity
             style={[styles.fingerprintBox, progress >= 1 && styles.completed]}
             onPress={() => registerFingerprint(1)}
-            disabled={progress >= 1}
-          >
+            disabled={progress >= 1}>
             <Image
               source={images.fingerprint} // Replace with your fingerprint icon path
               style={styles.fingerprintIcon}
+              resizeMode="contain"
             />
             <Text style={styles.fingerprintText}>
               {progress >= 1 ? 'Registered' : 'Add Fingerprint 1'}
@@ -80,11 +106,11 @@ const FingerprintEnrollment = () => {
           <TouchableOpacity
             style={[styles.fingerprintBox, progress >= 2 && styles.completed]}
             onPress={() => registerFingerprint(2)}
-            disabled={progress >= 2}
-          >
+            disabled={progress >= 2}>
             <Image
               source={images.fingerprint} // Replace with your fingerprint icon path
               style={styles.fingerprintIcon}
+              resizeMode="contain"
             />
             <Text style={styles.fingerprintText}>
               {progress >= 2 ? 'Registered' : 'Add Fingerprint 2'}
@@ -94,7 +120,9 @@ const FingerprintEnrollment = () => {
       )}
 
       {progress === 2 && (
-        <TouchableOpacity style={styles.confirmButton} onPress={confirmEnrollment}>
+        <TouchableOpacity
+          style={styles.confirmButton}
+          onPress={confirmEnrollment}>
           <Text style={styles.confirmButtonText}>Confirm Enrollment</Text>
         </TouchableOpacity>
       )}
@@ -141,7 +169,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
     width: '40%',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 4,
