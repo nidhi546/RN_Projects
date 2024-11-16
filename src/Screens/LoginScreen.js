@@ -13,8 +13,8 @@ import CustomTextInput from '../Componets/CustomTextInput';
 import CustomButton from '../Componets/CustomButton';
 import fonts from '../Utils/fonts';
 import images from '../Utils/images';
-import { userCredentials } from '../credentials/userCredentials';
-import { adminCredentials } from '../credentials/adminCredentials';
+import {userCredentials} from '../credentials/userCredentials';
+import {adminCredentials} from '../credentials/adminCredentials';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({navigation}) => {
@@ -22,29 +22,33 @@ const LoginScreen = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
- const handleLogin = async () => {
-  let userType = null;
-  const emailLower = email.toLowerCase();
+  const handleLogin = async () => {
+    let userType = null;
+    const emailLower = email.toLowerCase();
 
-  if (emailLower === userCredentials.email && password === userCredentials.password) {
-    userType = 'user';
-  } else if (emailLower === adminCredentials.email && password === adminCredentials.password) {
-    userType = 'admin';
-  }
-
-  if (userType) {
-    await AsyncStorage.setItem('userType', userType);
-    if (userType === 'admin') {
-      navigation.navigate('AdminStack', { screen: "AdminDashBord" });
-    } else {
-      navigation.navigate('UserStack', { screen: "UserDashbord" });
+    if (
+      emailLower === userCredentials.email &&
+      password === userCredentials.password
+    ) {
+      userType = 'user';
+    } else if (
+      emailLower === adminCredentials.email &&
+      password === adminCredentials.password
+    ) {
+      userType = 'admin';
     }
-  } else {
-    Alert.alert('Login failed', 'Invalid email or password');
-  }
-};
 
-
+    if (userType) {
+      await AsyncStorage.setItem('userType', userType);
+      if (userType === 'admin') {
+        navigation.navigate('AdminStack', {screen: 'AdminDashBord'});
+      } else {
+        navigation.navigate('UserStack', {screen: 'UserDashbord'});
+      }
+    } else {
+      Alert.alert('Login failed', 'Invalid email or password');
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -91,7 +95,11 @@ const LoginScreen = ({navigation}) => {
 
       <CustomButton title="Sign In" onPress={handleLogin} />
 
-      <TouchableOpacity style={styles.forgotPassword}>
+      <TouchableOpacity
+        style={styles.forgotPassword}
+        onPress={() =>
+          navigation.navigate('AuthStack', {screen: 'ForgotPasswordScreen'})
+        }>
         <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
       </TouchableOpacity>
 
