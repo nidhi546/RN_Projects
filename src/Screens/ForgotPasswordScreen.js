@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   View,
   TextInput,
@@ -7,12 +7,30 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Alert,
+  Dimensions,
+  Image,
+  StatusBar,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SmsRetriever from 'react-native-sms-retriever'; // Import SmsRetriever
 import fonts from '../Utils/fonts';
+import images from '../Utils/images';
 
-const OTPInput = ({ length = 6, otpValue, setOtpValue }) => {
+const {width} = Dimensions.get('window');
+
+// Local back icon image
+const backIcon =images.back; 
+
+const Header = ({onBackPress, title}) => (
+  <View style={styles.header}>
+    <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
+      <Image source={backIcon} style={styles.backIcon} />
+    </TouchableOpacity>
+    <Text style={styles.headerTitle}>{title}</Text>
+  </View>
+);
+
+const OTPInput = ({length = 6, otpValue, setOtpValue}) => {
   const inputs = useRef([]);
 
   const handleChangeText = (text, index) => {
@@ -40,24 +58,26 @@ const OTPInput = ({ length = 6, otpValue, setOtpValue }) => {
   }, [otpValue]);
 
   return (
-    <View style={styles.container}>
+    <View style={styles.otpContainer}>
       {otpValue.map((_, index) => (
         <TextInput
           key={index}
-          style={styles.input}
+          style={styles.otpInput}
           keyboardType="number-pad"
           maxLength={1}
-          onChangeText={(text) => handleChangeText(text, index)}
-          onKeyPress={(e) => handleKeyPress(e, index)}
-          ref={(ref) => (inputs.current[index] = ref)}
+          onChangeText={text => handleChangeText(text, index)}
+          onKeyPress={e => handleKeyPress(e, index)}
+          ref={ref => (inputs.current[index] = ref)}
           value={otpValue[index]}
+          // placeholder="•"
+          placeholderTextColor="#ccc"
         />
       ))}
     </View>
   );
 };
 
-const App = () => {
+const ForgotPasswordScreen = ({navigation}) => {
   const [otpValue, setOtpValue] = useState(new Array(6).fill(''));
 
   useEffect(() => {
@@ -84,14 +104,14 @@ const App = () => {
     };
   }, []);
 
-  const extractOTPFromMessage = (message) => {
+  const extractOTPFromMessage = message => {
     // Adjust the regex pattern according to your OTP SMS format
     const otpRegex = /\d{6}/; // Match a 6-digit OTP
     const match = message.match(otpRegex);
     return match ? match[0] : '';
   };
 
-  const autofillOTP = (otp) => {
+  const autofillOTP = otp => {
     if (otp && otp.length === 6) {
       const otpArray = otp.split('');
       setOtpValue(otpArray);
@@ -115,14 +135,18 @@ const App = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#E8F0F2' }}>
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle={'dark-content'} backgroundColor={"white"}/>
+      <Header
+        onBackPress={() => navigation.goBack()} // Replace with navigation or custom back logic
+        title="Forgot Password"
+      />
       <View style={styles.otpView}>
-        <Text style={styles.enterText}>Enter OTP:</Text>
+        <Text style={styles.enterText}>Enter OTP</Text>
         <OTPInput length={6} otpValue={otpValue} setOtpValue={setOtpValue} />
         <TouchableOpacity
-          style={styles.submitButtonView}
-          onPress={handleSubmit}
-        >
+          style={styles.submitButton}
+          onPress={handleSubmit}>
           <Text style={styles.submitText}>Submit OTP</Text>
         </TouchableOpacity>
       </View>
@@ -131,46 +155,90 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#F5F8FA',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  header: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    shadowOffset: {height: 1, width: 0},
+  },
+  backButton: {
+    padding: 5,
+    marginRight: 10,
+  },
+  backIcon: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontFamily: fonts.semibold,
+    color: '#333',
+  },
+  otpContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
     marginVertical: 20,
   },
-  input: {
-    width: 45,
-    height: 45,
+  otpInput: {
+    width: 46,
+    height: 46,
     margin: 5,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 8,
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 20,
+    color: '#333',
     fontFamily: fonts.medium,
-  },
-  submitButtonView: {
-    backgroundColor: '#29AB87',
-    borderRadius: 10,
-    paddingHorizontal: 40,
-    marginTop: 20,
-    padding: 4,
-  },
-  submitText: {
-    fontFamily: fonts.medium,
-    color: 'white',
-    fontSize: 16,
-    padding: 8,
+    backgroundColor: '#fff',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    shadowOffset: {height: 1, width: 0},
   },
   otpView: {
-    flex: 0.9,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 20,
+    flex:0.8
   },
   enterText: {
     fontFamily: fonts.semibold,
-    color: 'gray',
+    color: '#555',
+    fontSize: 18,
+    marginBottom: 10,
+    textDecorationLine:"underline"
+  },
+  submitButton: {
+    backgroundColor: '#007BFF',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    elevation: 5,
+    marginTop: 20,
+  },
+  submitText: {
+    fontFamily: fonts.medium,
+    color: '#fff',
     fontSize: 16,
+    textAlign: 'center',
   },
 });
 
-export default App;
+export default ForgotPasswordScreen;

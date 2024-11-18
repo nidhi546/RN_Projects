@@ -67,7 +67,7 @@ const LoginScreen = ({navigation}) => {
           iconName={images.email}
           placeholder="Email"
           value={email}
-          onChangeText={setEmail}
+          onChangeText={text => setEmail(text.toLowerCase())}
           keyboardType="email-address"
           iconstyle={{
             height: 20,
@@ -105,7 +105,7 @@ const LoginScreen = ({navigation}) => {
 
       <View style={styles.signupContainer}>
         <Text style={styles.signupText}>Don't have an account? </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>navigation.navigate("RegisterScreen")}>
           <Text style={styles.signupButton}>Sign Up</Text>
         </TouchableOpacity>
       </View>

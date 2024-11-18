@@ -15,6 +15,14 @@ const images = {
     E_mail:require(`${baseurl}email.png`),
     phone:require(`${baseurl}phone-call.png`),
     fingerprint:require(`${baseurl}fingerprint.png`),
+    back:require(`${baseurl}previous.png`),
+    camera:require(`${baseurl}camera.png`),
+    gallery:require(`${baseurl}gallery.png`),
+    cancel:require(`${baseurl}cancel.png`),
+    photo:require(`${baseurl}photo.png`),
+    camear1:require(`${baseurl}camear1.png`),
+    profile2:require(`${baseurl}profile2.png`),
+    camera5:require(`${baseurl}camera5.png`),
 
     
 };

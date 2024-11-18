@@ -17,7 +17,8 @@ import fonts from '../../Utils/fonts';
 import images from '../../Utils/images';
 import {Dropdown} from 'react-native-element-dropdown';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
+import Loader from '../../Componets/Loader';
 
 const BankingForm = ({navigation}) => {
   const [fullName, setFullName] = useState('');
@@ -37,10 +38,11 @@ const BankingForm = ({navigation}) => {
   const [maritalStatus, setMaritalStatus] = useState('Single');
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
+  const [IsLoading, setIsLoading] = useState(false);
 
   const formatDate = date => {
     const day = date.getDate();
-    const month = date.getMonth() + 1; 
+    const month = date.getMonth() + 1;
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
   };
@@ -52,11 +54,11 @@ const BankingForm = ({navigation}) => {
       setDob(formattedDate);
     }
   };
- useFocusEffect(
+  useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
-        navigation.navigate('UserStack',{screen:"UserDashbord"});
-        return true; // Prevent default back button behavior
+        navigation.navigate('UserStack', {screen: 'UserDashbord'});
+        return true; 
       };
 
       BackHandler.addEventListener('hardwareBackPress', onBackPress);
@@ -64,7 +66,7 @@ const BankingForm = ({navigation}) => {
       return () => {
         BackHandler.removeEventListener('hardwareBackPress', onBackPress);
       };
-    }, [navigation])
+    }, [navigation]),
   );
   const data = [
     {id: '1', value: 'Saving'},
@@ -72,6 +74,7 @@ const BankingForm = ({navigation}) => {
     {id: '3', value: 'Current'},
   ];
   const handleSubmit = async () => {
+    setIsLoading(true);
     if (!fullName) {
       Alert.alert('Please Enter Full Name!');
     } else if (!email) {
@@ -146,7 +149,7 @@ const BankingForm = ({navigation}) => {
 
         // Convert the updated array to a JSON string
         const jsonValue = JSON.stringify(userRecords);
-
+        setIsLoading(true);
         // Store the updated array in AsyncStorage
         await AsyncStorage.setItem('@form_data', jsonValue);
         console.log('Form Data stored in AsyncStorage:', jsonValue);
@@ -157,8 +160,10 @@ const BankingForm = ({navigation}) => {
           'Your application has been submitted successfully!',
         );
         setTimeout(() => {
+          setIsLoading(true);
           navigation.navigate('UserStack', {screen: 'UserDashboard'});
         }, 5000);
+        setIsLoading(false);
 
         // Optionally, reset the form fields
         // setFullName('');
@@ -183,6 +188,7 @@ const BankingForm = ({navigation}) => {
 
   return (
     <SafeAreaView style={{flex: 1}}>
+      {IsLoading && <Loader />}
       <ScrollView contentContainerStyle={styles.container}>
         {/* Personal Information */}
         <Text style={styles.sectionTitle}>Personal Information</Text>
@@ -208,18 +214,7 @@ const BankingForm = ({navigation}) => {
         />
 
         {/* Date of Birth */}
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            height: 40,
-            borderColor: '#ccc',
-            borderWidth: 1,
-            marginBottom: 10,
-            paddingLeft: 8,
-            borderRadius: 5,
-          }}>
+        <View style={styles.dobView}>
           <TextInput
             style={{fontFamily: fonts.regular}}
             placeholder="Date of Birth"
@@ -456,6 +451,17 @@ const styles = StyleSheet.create({
     padding: 12,
     color: 'black',
     fontSize: 20,
+  },
+  dobView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingLeft: 8,
+    borderRadius: 5,
   },
 });
 

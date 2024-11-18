@@ -3,6 +3,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import AdminDashBord from '../../Screens/Admin/AdminDashBord';
 import AdminProfileScreen from '../../Screens/Admin/AdminProfileScreen';
 import fonts from '../../Utils/fonts';
+import UserListScreen from '../../Screens/Admin/UserListScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -47,6 +48,20 @@ const AdminStack = () => {
         options={{
           headerShown: true,
           title: 'Profile',
+          headerTitleStyle: {
+            fontSize: 20,
+            color: 'black',
+            textAlign: 'center',
+            fontFamily: fonts.medium,
+          },
+        }}
+      />
+      <Drawer.Screen
+        name="UserListScreen"
+        component={UserListScreen}
+        options={{
+          headerShown: true,
+          title: 'UserList',
           headerTitleStyle: {
             fontSize: 20,
             color: 'black',
