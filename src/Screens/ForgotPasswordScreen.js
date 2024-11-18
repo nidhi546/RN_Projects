@@ -10,11 +10,13 @@ import {
   Dimensions,
   Image,
   StatusBar,
+  BackHandler,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SmsRetriever from 'react-native-sms-retriever'; // Import SmsRetriever
 import fonts from '../Utils/fonts';
 import images from '../Utils/images';
+import { useFocusEffect } from '@react-navigation/native';
 
 const {width} = Dimensions.get('window');
 
@@ -117,7 +119,20 @@ const ForgotPasswordScreen = ({navigation}) => {
       setOtpValue(otpArray);
     }
   };
+ useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        navigation.navigate('AuthStack', {screen: 'LoginScreen'});
+        return true; // Prevent default back button behavior
+      };
 
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
+    }, [navigation]),
+  );
   const handleSubmit = async () => {
     const otp = otpValue.join('');
     if (otp.length === 6) {

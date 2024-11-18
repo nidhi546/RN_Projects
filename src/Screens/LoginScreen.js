@@ -8,6 +8,7 @@ import {
   Platform,
   StyleSheet,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import CustomTextInput from '../Componets/CustomTextInput';
 import CustomButton from '../Componets/CustomButton';
@@ -16,37 +17,48 @@ import images from '../Utils/images';
 import {userCredentials} from '../credentials/userCredentials';
 import {adminCredentials} from '../credentials/adminCredentials';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loader from '../Componets/Loader';
 
 const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [IsLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
-    let userType = null;
-    const emailLower = email.toLowerCase();
-
-    if (
-      emailLower === userCredentials.email &&
-      password === userCredentials.password
-    ) {
-      userType = 'user';
-    } else if (
-      emailLower === adminCredentials.email &&
-      password === adminCredentials.password
-    ) {
-      userType = 'admin';
-    }
-
-    if (userType) {
-      await AsyncStorage.setItem('userType', userType);
-      if (userType === 'admin') {
-        navigation.navigate('AdminStack', {screen: 'AdminDashBord'});
-      } else {
-        navigation.navigate('UserStack', {screen: 'UserDashbord'});
-      }
+    if (!email) {
+      Alert.alert('Please Enter Email !');
+    } else if (!password) {
+      Alert.alert('Please Enter Password !');
     } else {
-      Alert.alert('Login failed', 'Invalid email or password');
+      setIsLoading(true);
+      let userType = null;
+      const emailLower = email.toLowerCase();
+
+      if (
+        emailLower === userCredentials.email &&
+        password === userCredentials.password
+      ) {
+        userType = 'user';
+      } else if (
+        emailLower === adminCredentials.email &&
+        password === adminCredentials.password
+      ) {
+        userType = 'admin';
+      }
+      setIsLoading(true);
+      if (userType) {
+        await AsyncStorage.setItem('userType', userType);
+        if (userType === 'admin') {
+          navigation.navigate('AdminStack', {screen: 'AdminDashBord'});
+          setIsLoading(false);
+        } else {
+          navigation.navigate('UserStack', {screen: 'UserDashbord'});
+          setIsLoading(false);
+        }
+      } else {
+        Alert.alert('Login failed', 'Invalid email or password');
+      }
     }
   };
 
@@ -54,6 +66,7 @@ const LoginScreen = ({navigation}) => {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        {IsLoading  && <Loader/>}
       <View style={styles.logoContainer}>
         <Image
           source={{uri: 'https://your-logo-url.com/logo.png'}}
@@ -105,7 +118,7 @@ const LoginScreen = ({navigation}) => {
 
       <View style={styles.signupContainer}>
         <Text style={styles.signupText}>Don't have an account? </Text>
-        <TouchableOpacity onPress={()=>navigation.navigate("RegisterScreen")}>
+        <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
           <Text style={styles.signupButton}>Sign Up</Text>
         </TouchableOpacity>
       </View>
