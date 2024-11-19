@@ -58,6 +58,7 @@ const LoginScreen = ({navigation}) => {
         }
       } else {
         Alert.alert('Login failed', 'Invalid email or password');
+         setIsLoading(false);
       }
     }
   };

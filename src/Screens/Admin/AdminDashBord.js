@@ -158,13 +158,18 @@ const AdminDashBord = ({navigation}) => {
     <SafeAreaView style={styles.safeareaView}>
       <View style={{paddingHorizontal: 10}}>
         <View>
-          <FlatList
-            contentContainerStyle={{marginBottom: 20, paddingHorizontal: 8}}
-            data={data}
-            renderItem={renderitem}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-          />
+          {data?.length > 0 ? (
+            <FlatList
+              contentContainerStyle={{marginBottom: 20, paddingHorizontal: 8}}
+              data={data}
+              renderItem={renderitem}
+              keyExtractor={(item, index) => index.toString()}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+            />
+          ) : (
+            <Text style={styles.nodataText}>No data available</Text>
+          )}
         </View>
       </View>
     </SafeAreaView>
@@ -198,6 +203,12 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     color: 'gray',
     fontSize: 12,
+  },
+  nodataText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+    color: '#555',
   },
 });
 export default AdminDashBord;

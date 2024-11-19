@@ -54,6 +54,12 @@ const UserStack = () => {
           headerShown: true,
           title: 'Profile',
           headerTitleAlign: 'center',
+          headerTitleStyle: {
+            fontSize: 20,
+            color: 'black',
+            textAlign: 'center',
+            fontFamily: fonts.medium,
+          },
           tabBarIcon: ({focused}) => (
             <Image
               source={images.user}

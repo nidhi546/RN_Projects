@@ -1,206 +1,164 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
+  StyleSheet,
   View,
   Text,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
   Image,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
 } from 'react-native';
-import ReactNativeBiometrics from 'react-native-biometrics';
-import images from '../../Utils/images';
+import fonts from '../../Utils/fonts';
 
-const FingerprintEnrollment = () => {
-  const [biometricAvailable, setBiometricAvailable] = useState(false);
-  const [progress, setProgress] = useState(0); // 0: No fingerprints, 1: First done, 2: All done
-
-  const rnBiometrics = new ReactNativeBiometrics();
-
-  // Check for biometric hardware availability
-  const checkBiometricAvailability = () => {
-    rnBiometrics
-      .isSensorAvailable()
-      .then(resultObject => {
-        const {available, biometryType} = resultObject;
-
-        if (available) {
-          setBiometricAvailable(true);
-          Alert.alert(
-            'Success',
-            `${biometryType} is available on this device.`,
-          );
-        } else {
-          setBiometricAvailable(false);
-          Alert.alert(
-            'Error',
-            'Biometric hardware is not available on this device.',
-          );
-        }
-      })
-      .catch(() => Alert.alert('Error', 'Unable to check biometric hardware.'));
-  };
-
-  // Register fingerprints
-  const registerFingerprint = fingerprintNumber => {
-    rnBiometrics
-      .simplePrompt({
-        promptMessage: `Register Fingerprint ${fingerprintNumber}`,
-      })
-      .then(result => {
-        if (result.success) {
-          setProgress(fingerprintNumber);
-          Alert.alert(
-            'Fingerprint Registered',
-            `Fingerprint ${fingerprintNumber} registered successfully!`,
-          );
-        } else {
-          Alert.alert('Failed', 'Fingerprint registration was cancelled.');
-        }
-      })
-      .catch(() => Alert.alert('Error', 'Fingerprint registration failed.'));
-  };
-
-  // Confirmation after completing the enrollment
-  const confirmEnrollment = () => {
-    if (progress === 2) {
-      Alert.alert(
-        'Success',
-        'Both fingerprints have been registered successfully!',
-      );
-    } else {
-      Alert.alert(
-        'Incomplete',
-        'Please complete the fingerprint registration.',
-      );
-    }
-  };
-
+const UserProfile = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Fingerprint Enrollment</Text>
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.profileSection}>
+          <Image
+            source={{uri: 'https://via.placeholder.com/100'}}
+            style={styles.profileImage}
+          />
+          <Text style={styles.userName}>John Doe</Text>
+          <Text style={styles.userEmail}>johndoe@gmail.com</Text>
+        </View>
 
-      <TouchableOpacity
-        style={styles.checkButton}
-        onPress={checkBiometricAvailability}>
-        <Text style={styles.checkButtonText}>Check Biometric Availability</Text>
-      </TouchableOpacity>
+        <View style={styles.accountSection}>
+          <Text style={styles.sectionTitle}>Account Details</Text>
+          <View style={styles.accountDetails}>
+            <Text style={styles.label}>Account Number:</Text>
+            <Text style={styles.value}>123456789012</Text>
+          </View>
+          <View style={styles.accountDetails}>
+            <Text style={styles.label}>Account Type:</Text>
+            <Text style={styles.value}>Savings</Text>
+          </View>
+          <View style={styles.accountDetails}>
+            <Text style={styles.label}>Available Balance:</Text>
+            <Text style={styles.value}>₹1,25,000</Text>
+          </View>
+        </View>
 
-      {biometricAvailable && (
-        <View style={styles.fingerprintContainer}>
-          {/* First Fingerprint Icon */}
-          <TouchableOpacity
-            style={[styles.fingerprintBox, progress >= 1 && styles.completed]}
-            onPress={() => registerFingerprint(1)}
-            disabled={progress >= 1}>
-            <Image
-              source={images.fingerprint} // Replace with your fingerprint icon path
-              style={styles.fingerprintIcon}
-              resizeMode="contain"
-            />
-            <Text style={styles.fingerprintText}>
-              {progress >= 1 ? 'Registered' : 'Add Fingerprint 1'}
-            </Text>
+        <View style={styles.quickActions}>
+          <TouchableOpacity style={styles.quickActionButton}>
+            <Text style={styles.quickActionText}>💰 Deposit</Text>
           </TouchableOpacity>
-
-          {/* Second Fingerprint Icon */}
-          <TouchableOpacity
-            style={[styles.fingerprintBox, progress >= 2 && styles.completed]}
-            onPress={() => registerFingerprint(2)}
-            disabled={progress >= 2}>
-            <Image
-              source={images.fingerprint} // Replace with your fingerprint icon path
-              style={styles.fingerprintIcon}
-              resizeMode="contain"
-            />
-            <Text style={styles.fingerprintText}>
-              {progress >= 2 ? 'Registered' : 'Add Fingerprint 2'}
-            </Text>
+          <TouchableOpacity style={styles.quickActionButton}>
+            <Text style={styles.quickActionText}>📤 Transfer</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.quickActionButton}>
+            <Text style={styles.quickActionText}>💳 Pay Bills</Text>
           </TouchableOpacity>
         </View>
-      )}
 
-      {progress === 2 && (
-        <TouchableOpacity
-          style={styles.confirmButton}
-          onPress={confirmEnrollment}>
-          <Text style={styles.confirmButtonText}>Confirm Enrollment</Text>
-        </TouchableOpacity>
-      )}
-    </View>
+        {/* Action Buttons */}
+        <View style={styles.actions}>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Transaction History</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Transfer Funds</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Manage Beneficiaries</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexGrow: 1,
+    backgroundColor: '#f5f5f5',
     padding: 20,
-    backgroundColor: '#f4f4f4',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 30,
-  },
-  checkButton: {
-    backgroundColor: '#007BFF',
-    padding: 15,
-    borderRadius: 10,
+  profileSection: {
+    alignItems: 'center',
     marginBottom: 20,
-    width: '80%',
-    alignItems: 'center',
   },
-  checkButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10,
   },
-  fingerprintContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    marginTop: 20,
-  },
-  fingerprintBox: {
-    alignItems: 'center',
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: '#f0f0f0',
-    width: '40%',
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 4,
-  },
-  fingerprintIcon: {
-    width: 50,
-    height: 50,
-    tintColor: '#555',
-  },
-  fingerprintText: {
-    marginTop: 10,
-    fontSize: 14,
+  userName: {
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#333',
   },
-  completed: {
-    backgroundColor: '#d4edda',
+  userEmail: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 5,
   },
-  confirmButton: {
-    backgroundColor: '#28a745',
-    padding: 15,
+  accountSection: {
+    backgroundColor: '#fff',
+    padding: 20,
     borderRadius: 10,
-    marginTop: 30,
-    width: '80%',
-    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    marginBottom: 20,
   },
-  confirmButtonText: {
+  sectionTitle: {
+    fontSize: 18,
+    color: '#333',
+    marginBottom: 10,
+    fontFamily: fonts.semibold,
+  },
+  accountDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+  },
+  label: {
+    fontSize: 14,
+    color: '#555',
+    fontFamily: fonts.regular,
+  },
+  value: {
+    fontSize: 14,
+    color: '#333',
+    fontFamily: fonts.medium,
+  },
+  actions: {
+    marginTop: 10,
+  },
+  button: {
+    backgroundColor: '#007bff',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  buttonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily:fonts.semibold
+  },
+  quickActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  quickActionButton: {
+    padding: 13,
+    borderRadius: 8,
+    alignItems: 'center',
+    // width: 100,
+    backgroundColor: 'lightgray',
+    // backgroundColor: "#292929"
+  },
+  quickActionText: {
+    fontSize: 14,
+    fontFamily:fonts.medium
   },
 });
 
-export default FingerprintEnrollment;
+export default UserProfile;
